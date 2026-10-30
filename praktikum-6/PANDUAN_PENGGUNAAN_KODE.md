@@ -4,4 +4,4 @@ Ketika mengakses kode program di dalam github, pertama-tama buat Activity baru t
 
 File yang diberikan pada kode program hanya file yang berpengaruh pada kesesuaian instruksi. Jika file yang ditemukan pada Android Studio tidak disertakan di dalam link folder github ini, maka bisa gunakan isi file bawaan ketika membuat Empty Activity pada Android Studio.
 
-Pastikan semua file dibuat di dalam package yang sama (com.example.(nama package)), kecuali file build.gradle.kts. Pastikan juga semua syntax "package com.exampe.(nama package)" dan "import com.example.(nama package)" diganti sesuai dengan nama package yang dibuat masing-masing.
+Pastikan semua file dibuat di dalam package yang sama (com.example.(nama package)), kecuali "src/build.gradle.kts". Pastikan juga semua syntax "package com.exampe.(nama package)" dan "import com.example.(nama package)" diganti sesuai dengan nama package yang dibuat masing-masing.
