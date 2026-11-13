@@ -1,91 +1,110 @@
-package com.example.praktikum7_jasonmanuel_245150201111050.ui.home
+package com.example.praktikum8_jasonmanuel_245150201111050.ui.home
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.praktikum7_jasonmanuel_245150201111050.data.repository.StudentRepository
+import androidx.lifecycle.viewModelScope
+import com.example.praktikum8_jasonmanuel_245150201111050.data.repository.StudentRepository
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 
 class HomeViewModel(
     private val repository: StudentRepository
 ) : ViewModel() {
 
-    var uiState by mutableStateOf(HomeUiState())
-        private set
+    // State untuk tampilan Home
+    private val _uiState = MutableStateFlow(HomeUiState())
+    val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
+
+    // State khusus untuk teks pencarian
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery: StateFlow<String> = _searchQuery.asStateFlow()
+
+    // Menyimpan Job untuk Retry dan Refresh
+    private var retryJob: Job? = null
 
     init {
-        loadStudents()
+        observeSearch()
     }
 
+    // Mengubah query ketika pengguna mengetik
     fun onSearchQueryChange(query: String) {
-        uiState = uiState.copy(
-            searchQuery = query
-        )
+        _searchQuery.value = query
     }
 
-    fun loadStudents() {
-        uiState = uiState.copy(
+    // Mengamati perubahan query menggunakan Flow
+    @OptIn(FlowPreview::class)
+    private fun observeSearch() {
+        viewModelScope.launch {
+            _searchQuery
+                .debounce(500)
+                .distinctUntilChanged()
+                .collectLatest { query ->
+                    // Membatalkan request Retry atau Refresh sebelumnya
+                    retryJob?.cancel()
+
+                    loadData(query)
+                }
+        }
+    }
+
+    // Mengambil daftar mahasiswa atau melakukan pencarian
+    private suspend fun loadData(query: String) {
+        _uiState.value = _uiState.value.copy(
             isLoading = true,
             errorMessage = null
         )
 
-        repository.getStudents { result ->
-            result
-                .onSuccess { data ->
-                    uiState = uiState.copy(
-                        students = data,
-                        isLoading = false,
-                        errorMessage = null
-                    )
-                }
-                .onFailure { error ->
-                    uiState = uiState.copy(
-                        isLoading = false,
-                        errorMessage = error.message
-                            ?: "Gagal mengambil data"
-                    )
-                }
+        try {
+            val data = if (query.isBlank()) {
+                repository.getStudents()
+            } else {
+                repository.searchStudents(query)
+            }
+
+            _uiState.value = HomeUiState(
+                students = data,
+                isLoading = false,
+                errorMessage = null
+            )
+
+        } catch (e: CancellationException) {
+            throw e
+
+        } catch (e: Exception) {
+            _uiState.value = _uiState.value.copy(
+                isLoading = false,
+                errorMessage = e.message ?: "Gagal mengambil data"
+            )
         }
     }
 
-    fun searchStudents() {
-        val query = uiState.searchQuery.trim()
-
-        if (query.isEmpty()) {
-            loadStudents()
-            return
-        }
-
-        uiState = uiState.copy(
-            isLoading = true,
-            errorMessage = null
-        )
-
-        repository.searchStudents(query) { result ->
-            result
-                .onSuccess { data ->
-                    uiState = uiState.copy(
-                        students = data,
-                        isLoading = false,
-                        errorMessage = null
-                    )
-                }
-                .onFailure { error ->
-                    uiState = uiState.copy(
-                        isLoading = false,
-                        errorMessage = error.message
-                            ?: "Gagal mencari mahasiswa"
-                    )
-                }
-        }
-    }
-
+    // Mengulangi request ketika terjadi error
     fun retry() {
-        if (uiState.searchQuery.isBlank()) {
-            loadStudents()
-        } else {
-            searchStudents()
+        retryJob?.cancel()
+
+        val query = _searchQuery.value
+
+        retryJob = viewModelScope.launch {
+            loadData(query)
+        }
+    }
+
+    // Memperbarui data berdasarkan query yang sedang digunakan
+    fun refresh() {
+        retryJob?.cancel()
+
+        val query = _searchQuery.value.trim()
+
+        retryJob = viewModelScope.launch {
+            loadData(query)
         }
     }
 
