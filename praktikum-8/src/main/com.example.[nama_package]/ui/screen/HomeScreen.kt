@@ -1,4 +1,4 @@
-package com.example.praktikum7_jasonmanuel_245150201111050.ui.screen
+package com.example.praktikum8_jasonmanuel_245150201111050.ui.screen
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -15,51 +15,52 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.praktikum7_jasonmanuel_245150201111050.ui.home.HomeUiState
+import com.example.praktikum8_jasonmanuel_245150201111050.ui.home.HomeUiState
 
 @Composable
 fun HomeScreen(
     uiState: HomeUiState,
+    searchQuery: String,
     onSearchQueryChange: (String) -> Unit,
-    onSearch: () -> Unit,
     onOpenDetail: (Int) -> Unit,
     onOpenProfile: () -> Unit,
     onOpenAbout: () -> Unit,
-    onRetry: () -> Unit
+    onRetry: () -> Unit,
+    onRefresh: () -> Unit
 ) {
-
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(24.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
+        Text(
+            text = "Home",
+            style = MaterialTheme.typography.headlineMedium
+        )
 
-        Text(text = "Home", style = MaterialTheme.typography.headlineMedium)
         Text(text = "Cari profil mahasiswa:")
 
-        Row(
+        OutlinedTextField(
+            value = searchQuery,
+            onValueChange = onSearchQueryChange,
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically
+            label = { Text("Nama pengguna") },
+            placeholder = { Text("Masukkan nama...") },
+            singleLine = true
+        )
+
+        // Tombol Refresh
+        Button(
+            onClick = onRefresh,
+            enabled = !uiState.isLoading,
+            modifier = Modifier.fillMaxWidth()
         ) {
-
-            OutlinedTextField(
-                value = uiState.searchQuery,
-                onValueChange = onSearchQueryChange,
-                modifier = Modifier.weight(1f),
-                label = { Text("Nama pengguna") },
-                placeholder = { Text("Masukkan nama...") },
-                singleLine = true
-            )
-
-            Button(onClick = onSearch, enabled = !uiState.isLoading) {
-                Text("Cari")
-            }
+            Text("Refresh")
         }
 
         Text(
-            text = if (uiState.searchQuery.isBlank()) {
+            text = if (searchQuery.isBlank()) {
                 "Pilih mahasiswa untuk melihat detail:"
             } else {
                 "Hasil pencarian:"
@@ -78,9 +79,7 @@ fun HomeScreen(
                 ) {
                     CircularProgressIndicator()
 
-                    Text(
-                        text = "Memuat data mahasiswa..."
-                    )
+                    Text("Memuat data mahasiswa...")
                 }
             }
 
@@ -92,10 +91,7 @@ fun HomeScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-
-                    Text(
-                        text = uiState.errorMessage
-                    )
+                    Text(text = uiState.errorMessage)
 
                     Button(
                         onClick = onRetry
@@ -114,7 +110,7 @@ fun HomeScreen(
                     verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = if (uiState.searchQuery.isNotBlank()) {
+                        text = if (searchQuery.isNotBlank()) {
                             "Tidak ada mahasiswa yang ditemukan."
                         } else {
                             "Belum ada data mahasiswa."
@@ -130,12 +126,10 @@ fun HomeScreen(
                         .weight(1f),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-
                     items(
                         items = uiState.students,
                         key = { student -> student.id }
                     ) { student ->
-
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -143,16 +137,13 @@ fun HomeScreen(
                                     onOpenDetail(student.id)
                                 }
                         ) {
-
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(16.dp),
                                 horizontalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
-
                                 Column {
-
                                     Text(
                                         text = "ID: ${student.id}",
                                         style = MaterialTheme.typography.bodyMedium
