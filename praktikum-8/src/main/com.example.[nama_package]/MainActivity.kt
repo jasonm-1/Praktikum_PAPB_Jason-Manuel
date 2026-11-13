@@ -1,4 +1,4 @@
-package com.example.praktikum7_jasonmanuel_245150201111050
+package com.example.praktikum8_jasonmanuel_245150201111050
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 
-import com.example.praktikum7_jasonmanuel_245150201111050.navigation.NavigationLabApp
-import com.example.praktikum7_jasonmanuel_245150201111050.ui.theme.Praktikum7_JasonManuel_245150201111050Theme
+import com.example.praktikum8_jasonmanuel_245150201111050.navigation.NavigationLabApp
+import com.example.praktikum8_jasonmanuel_245150201111050.ui.theme.Praktikum8_JasonManuel_245150201111050Theme
 
 class MainActivity : ComponentActivity() {
 
@@ -16,7 +16,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            Praktikum7_JasonManuel_245150201111050Theme {
+            Praktikum8_JasonManuel_245150201111050Theme {
                 Surface(
                     modifier = Modifier.fillMaxSize()
                 ) {
