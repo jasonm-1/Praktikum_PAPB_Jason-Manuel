@@ -1,4 +1,4 @@
-package com.example.praktikum7_jasonmanuel_245150201111050.ui.screen
+package com.example.praktikum8_jasonmanuel_245150201111050.ui.screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
