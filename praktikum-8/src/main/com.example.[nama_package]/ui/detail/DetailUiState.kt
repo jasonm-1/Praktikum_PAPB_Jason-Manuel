@@ -1,6 +1,6 @@
-package com.example.praktikum7_jasonmanuel_245150201111050.ui.detail
+package com.example.praktikum8_jasonmanuel_245150201111050.ui.detail
 
-import com.example.praktikum7_jasonmanuel_245150201111050.data.model.Student
+import com.example.praktikum8_jasonmanuel_245150201111050.data.model.Student
 
 data class DetailUiState(
     val student: Student? = null,
