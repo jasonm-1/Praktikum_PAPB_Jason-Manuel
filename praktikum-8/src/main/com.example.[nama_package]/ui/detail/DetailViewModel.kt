@@ -1,38 +1,46 @@
-package com.example.praktikum7_jasonmanuel_245150201111050.ui.detail
+package com.example.praktikum8_jasonmanuel_245150201111050.ui.detail
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.praktikum7_jasonmanuel_245150201111050.data.repository.StudentRepository
+import androidx.lifecycle.viewModelScope
+import com.example.praktikum8_jasonmanuel_245150201111050.data.repository.StudentRepository
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 class DetailViewModel(
     private val repository: StudentRepository
 ) : ViewModel() {
 
-    var uiState by mutableStateOf(DetailUiState())
-        private set
+    // State untuk tampilan Detail
+    private val _uiState = MutableStateFlow(DetailUiState())
+    val uiState: StateFlow<DetailUiState> = _uiState.asStateFlow()
 
+    // Mengambil detail mahasiswa berdasarkan ID
     fun loadStudent(id: Int) {
-        uiState = uiState.copy(
-            isLoading = true,
-            errorMessage = null
-        )
+        viewModelScope.launch {
 
-        repository.getStudent(id) { result ->
-            result
-                .onSuccess { student ->
-                    uiState = DetailUiState(
-                        student = student
-                    )
-                }
-                .onFailure { error ->
-                    uiState = DetailUiState(
-                        errorMessage = error.message
-                            ?: "Data tidak tersedia"
-                    )
-                }
+            _uiState.value = DetailUiState(
+                isLoading = true
+            )
+
+            try {
+                val student = repository.getStudent(id)
+
+                _uiState.value = DetailUiState(
+                    student = student
+                )
+
+            } catch (e: CancellationException) {
+                throw e
+
+            } catch (e: Exception) {
+                _uiState.value = DetailUiState(
+                    errorMessage = e.message ?: "Data tidak tersedia"
+                )
+            }
         }
     }
 
