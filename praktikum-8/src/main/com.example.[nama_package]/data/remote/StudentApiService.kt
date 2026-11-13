@@ -1,25 +1,25 @@
-package com.example.praktikum7_jasonmanuel_245150201111050.data.remote
+package com.example.praktikum8_jasonmanuel_245150201111050.data.remote
 
-import com.example.praktikum7_jasonmanuel_245150201111050.data.remote.dto.UserDto
-import com.example.praktikum7_jasonmanuel_245150201111050.data.remote.dto.UserResponse
-import retrofit2.Call
+import com.example.praktikum8_jasonmanuel_245150201111050.data.remote.dto.UserDto
+import com.example.praktikum8_jasonmanuel_245150201111050.data.remote.dto.UserResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface StudentApiService {
+
     @GET("users")
-    fun getUsers(
+    suspend fun getUsers(
         @Query("limit") limit: Int = 10
-    ): Call<UserResponse>
+    ): UserResponse
 
     @GET("users/{id}")
-    fun getUser(
+    suspend fun getUser(
         @Path("id") id: Int
-    ): Call<UserDto>
+    ): UserDto
 
     @GET("users/search")
-    fun searchUsers(
+    suspend fun searchUsers(
         @Query("q") query: String
-    ): Call<UserResponse>
+    ): UserResponse
 }
