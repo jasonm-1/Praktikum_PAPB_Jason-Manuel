@@ -1,9 +1,6 @@
-package com.example.praktikum7_jasonmanuel_245150201111050.ui.screen
+package com.example.praktikum8_jasonmanuel_245150201111050.ui.screen
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -13,7 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
-import com.example.praktikum7_jasonmanuel_245150201111050.ui.detail.DetailUiState
+import com.example.praktikum8_jasonmanuel_245150201111050.ui.detail.DetailUiState
 
 @Composable
 fun DetailScreen(
@@ -39,6 +36,7 @@ fun DetailScreen(
                     verticalArrangement = Arrangement.Center
                 ) {
                     CircularProgressIndicator()
+
                     Text("Memuat detail mahasiswa...")
                 }
             }
@@ -55,6 +53,7 @@ fun DetailScreen(
                     style = MaterialTheme.typography.headlineSmall
                 )
 
+                Text("ID: ${student.id}")
                 Text("Email: ${student.email}")
                 Text("University: ${student.university}")
             }
