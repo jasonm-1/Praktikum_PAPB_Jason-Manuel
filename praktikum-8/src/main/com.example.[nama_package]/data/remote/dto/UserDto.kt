@@ -1,6 +1,6 @@
-package com.example.praktikum7_jasonmanuel_245150201111050.data.remote.dto
+package com.example.praktikum8_jasonmanuel_245150201111050.data.remote.dto
 
-import com.example.praktikum7_jasonmanuel_245150201111050.data.model.Student
+import com.example.praktikum8_jasonmanuel_245150201111050.data.model.Student
 
 data class UserDto(
     val id: Int,
