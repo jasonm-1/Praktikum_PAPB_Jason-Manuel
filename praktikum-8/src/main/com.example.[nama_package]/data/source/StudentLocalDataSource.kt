@@ -1,6 +1,6 @@
-package com.example.praktikum7_jasonmanuel_245150201111050.data.source
+package com.example.praktikum8_jasonmanuel_245150201111050.data.source
 
-import com.example.praktikum7_jasonmanuel_245150201111050.data.model.Student
+import com.example.praktikum8_jasonmanuel_245150201111050.data.model.Student
 
 class StudentLocalDataSource {
 
